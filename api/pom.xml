@@ -1,0 +1,119 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>me.siasur.areacommunity.aogbot</groupId>
+  <artifactId>api</artifactId>
+  <version>1.0</version>
+  <packaging>jar</packaging>
+
+  <prerequisites>
+    <maven>3.0</maven>
+  </prerequisites>
+
+  <parent>
+    <groupId>me.siasur.areacommunity.aogbot</groupId>
+    <artifactId>aogbot</artifactId>
+    <version>1.0</version>
+  </parent>
+
+  <name>AreaBot Api</name>
+  <url>http://www.github.com/siasur</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <!-- <repositories>
+    <repository>
+      <id>TeamSpeak-3-Java-API-mvn-repo</id>
+      <url>https://raw.githubusercontent.com/TheHolyWaffle/TeamSpeak-3-Java-API/mvn-repo/</url>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </snapshots>
+    </repository>
+  </repositories>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.github.theholywaffle</groupId>
+      <artifactId>teamspeak3-api</artifactId>
+      <version>[1.0.0,2.0.0)</version>
+    </dependency>
+
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>6.0.5</version>
+    </dependency>
+
+    <dependency>
+      <groupId>net.sf.jopt-simple</groupId>
+      <artifactId>jopt-simple</artifactId>
+      <version>6.0-alpha-1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies> -->
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.5.1</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+
+      <!-- <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.0.2</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>me.siasur.areacommunity.aogbot.Launcher</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin> -->
+
+      <!-- <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>2.4.3</version>
+        <configuration>
+          <minimizeJar>true</minimizeJar>
+          <relocations>
+            <relocation>
+              <pattern>com.github.theholywaffle</pattern>
+              <shadedPattern>me.siasur.shaded.theholywaffle</shadedPattern>
+            </relocation>
+            <relocation>
+              <pattern>net.sf.jopt-simple</pattern>
+              <shadedPattern>me.siasur.shaded.jopt-simple</shadedPattern>
+            </relocation>
+          </relocations>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin> -->
+    </plugins>
+  </build>
+
+</project>
