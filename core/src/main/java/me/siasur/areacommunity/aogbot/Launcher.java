@@ -1,11 +1,10 @@
 package me.siasur.areacommunity.aogbot;
 
-import java.io.IOException;
 import java.util.Arrays;
 
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
-import me.siasur.areacommunity.aogbot.core.AoGBot;
+import me.siasur.areacommunity.aogbot.config.AoGBotConfig;
 
 /***
  * Launcher for the AoGBot
@@ -13,19 +12,19 @@ import me.siasur.areacommunity.aogbot.core.AoGBot;
  */
 public class Launcher {
 
-	public static void main(String[] args) throws IOException {
-		OptionParser parser = getParser();
-		OptionSet rawOptions = parser.parse(args);
-		AoGOptions options = AoGOptions.fromOptionSet(rawOptions);
+	/**
+	 * Entry point
+	 * 
+	 * @param args The command line arguments
+	 */
+	public static void main(String[] args) {
+		OptionParser optParser = getParser();
+		OptionSet options = optParser.parse(args);
 		
-		if (!options.isValid()) {
-			parser.printHelpOn(System.out);
-			System.exit(1);
-		}
+		String configPath = (String)options.valueOf("config");
+		AoGBotConfig config = AoGBotConfig.fromFile(configPath);
 		
-		AoGBot aogBot = new AoGBot(options);
-		
-		aogBot.connect();
+		AoGBot aogBot = new AoGBot(config);
 		aogBot.run();
 	}
 	
@@ -37,37 +36,43 @@ public class Launcher {
 	private static OptionParser getParser() {
 		OptionParser parser = new OptionParser();
 		
-		parser.acceptsAll(Arrays.asList("h", "host"), "address of the teamspeak server")
+		parser.acceptsAll(Arrays.asList("c", "config", "cfg", "cofiguration"), "Path to the configuration file.")
 		.withRequiredArg()
 		.ofType(String.class)
-		.describedAs("ip-address")
+		.describedAs("path")
 		.isRequired();
 		
-		parser.acceptsAll(Arrays.asList("u", "user"), "Username for the query login")
-		.withRequiredArg()
-		.ofType(String.class)
-		.describedAs("username")
-		.isRequired();
-		
-		parser.acceptsAll(Arrays.asList("p", "password", "passwd"), "Password for the query login")
-		.withRequiredArg()
-		.ofType(String.class)
-		.describedAs("password")
-		.isRequired();
-		
-		parser.acceptsAll(Arrays.asList("i", "id"), "The id of the teamspeak instance")
-		.withRequiredArg()
-		.ofType(Integer.class)
-		.describedAs("server-id")
-		.isRequired();
-		
-		parser.acceptsAll(Arrays.asList("n", "name"), "The name that will be visible on the server")
-		.withRequiredArg()
-		.ofType(String.class)
-		.describedAs("display-name")
-		.isRequired();
-		
-		parser.accepts("slowmode", "Should the system run in slow mode");
+//		parser.acceptsAll(Arrays.asList("h", "host"), "address of the teamspeak server")
+//		.withRequiredArg()
+//		.ofType(String.class)
+//		.describedAs("ip-address")
+//		.isRequired();
+//		
+//		parser.acceptsAll(Arrays.asList("u", "user"), "Username for the query login")
+//		.withRequiredArg()
+//		.ofType(String.class)
+//		.describedAs("username")
+//		.isRequired();
+//		
+//		parser.acceptsAll(Arrays.asList("p", "password", "passwd"), "Password for the query login")
+//		.withRequiredArg()
+//		.ofType(String.class)
+//		.describedAs("password")
+//		.isRequired();
+//		
+//		parser.acceptsAll(Arrays.asList("i", "id"), "The id of the teamspeak instance")
+//		.withRequiredArg()
+//		.ofType(Integer.class)
+//		.describedAs("server-id")
+//		.isRequired();
+//		
+//		parser.acceptsAll(Arrays.asList("n", "name"), "The name that will be visible on the server")
+//		.withRequiredArg()
+//		.ofType(String.class)
+//		.describedAs("display-name")
+//		.isRequired();
+//		
+//		parser.accepts("slowmode", "Should the system run in slow mode");
 		
 		return parser;
 	}
