@@ -3,6 +3,7 @@ package me.siasur.areacommunity.aogbot.bridge;
 import java.util.Date;
 
 import com.github.theholywaffle.teamspeak3.TS3Api;
+import com.github.theholywaffle.teamspeak3.api.ClientProperty;
 import com.github.theholywaffle.teamspeak3.api.TextMessageTargetMode;
 import com.github.theholywaffle.teamspeak3.api.wrapper.ClientInfo;
 
@@ -248,6 +249,9 @@ public class AoGClient implements IAoGClient {
 		_ts3Api.pokeClient(_clientId, message);
 	}
 
+	/**
+	 * Reloads the client from the server
+	 */
 	public void refresh() {
 		ClientInfo clientInfo = _ts3Api.getClientInfo(_clientId);
 
@@ -303,11 +307,25 @@ public class AoGClient implements IAoGClient {
 		_ts3Api.sendTextMessage(TextMessageTargetMode.CLIENT, _clientId, message);
 	}
 
+	/**
+	 * Sets the channel in which the client is currently
+	 * @param channel the {@link AoGChannel}
+	 */
 	public void setChannel(AoGChannel channel) {
 		_channel = channel;
 	}
 	
+	/**
+	 * Gets the id of the channel the client is currently in
+	 * @return the {@code channelId}
+	 */
 	public int getChannelId() {
 		return _channelId;
+	}
+
+	@Override
+	public void setDescription(String description) {		
+		_description = description;
+		_ts3Api.editClient(_clientId, ClientProperty.CLIENT_DESCRIPTION, description);
 	}
 }

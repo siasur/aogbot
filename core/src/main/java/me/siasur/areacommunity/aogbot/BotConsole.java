@@ -33,11 +33,13 @@ public class BotConsole implements Runnable {
 				_query.exit();
 			}
 			
-			if (userInput.startsWith("pokeall")) {
+			if (userInput.startsWith("pokeall ")) {
 				ServiceLocator.getServiceLocator().getService(IClientManager.class).getAllClients().forEach(c -> {c.poke(userInput.substring(userInput.indexOf(" ") + 1));});
 			}
 			
 		} while(_running);
+		
+		scanner.close();
 	}
 
 }
