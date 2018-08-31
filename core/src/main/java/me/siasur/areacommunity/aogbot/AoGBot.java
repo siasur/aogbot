@@ -88,6 +88,9 @@ public class AoGBot {
 		_channelManager.locateClients(_clientManager.getAllClients());
 		
 		loadModules();
+		
+		Thread consoleThread = new Thread(new BotConsole(query));
+		consoleThread.start();
 	}
 	
 	private void loadModules() {
