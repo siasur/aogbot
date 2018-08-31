@@ -24,6 +24,21 @@ public interface IAoGChannel {
 	
 	public boolean isEmpty();
 	
-	public int getNeededSubscribePower();
+	public boolean isDefault();
 	
+	public int getMaxClients();
+	
+	public int getMaxFamilyClients();
+	
+	public int getSecondsEmpty();
+	
+	public String getDescription();
+
+	public String getPassword();
+	
+	public boolean isEncrypted();
+	
+	public boolean isForcedSilence();
+	
+	public String getPhoneticName();
 }

@@ -15,9 +15,6 @@ import com.github.theholywaffle.teamspeak3.api.event.TS3EventAdapter;
 import com.github.theholywaffle.teamspeak3.api.event.TextMessageEvent;
 import com.github.theholywaffle.teamspeak3.api.reconnect.ConnectionHandler;
 import com.github.theholywaffle.teamspeak3.api.reconnect.ReconnectStrategy;
-import com.github.theholywaffle.teamspeak3.api.wrapper.Channel;
-import com.github.theholywaffle.teamspeak3.api.wrapper.ChannelInfo;
-import com.github.theholywaffle.teamspeak3.api.wrapper.Client;
 
 import me.siasur.areacommunity.aogbot.bridge.ChannelManager;
 import me.siasur.areacommunity.aogbot.bridge.ClientManager;
@@ -59,13 +56,11 @@ public class AoGBot {
 			@Override
 			public void onConnect(TS3Query query) {
 				connect(query.getApi());
-				
 			}
 			
 			@Override
 			public void onDisconnect(TS3Query query) {
 				// Nothing
-				
 			}
 		});
 		
@@ -177,14 +172,14 @@ public class AoGBot {
 			public void onChannelEdit(ChannelEditedEvent channelEditedEvent) {
 				int channelId = channelEditedEvent.getChannelId();
 				
-				_channelManager.refreshChannel(channelId);
+				//_channelManager.refreshChannel(channelId);
 			}
 			
 			@Override
 			public void onChannelDescriptionChanged(ChannelDescriptionEditedEvent channelDescriptionEditedEvent) {
 				int channelId = channelDescriptionEditedEvent.getChannelId();
 				
-				_channelManager.refreshChannel(channelId);
+				//_channelManager.refreshChannel(channelId);
 			}
 			
 			@Override
@@ -197,10 +192,8 @@ public class AoGBot {
 			@Override
 			public void onChannelCreate(ChannelCreateEvent channelCreateEvent) {
 				int channelId = channelCreateEvent.getChannelId();
-				ChannelInfo channelInfo = api.getChannelInfo(channelId);
-				Channel channel = api.getChannelByNameExact(channelInfo.getName(), false);
 				
-				_channelManager.manageChannel(channel);				
+				_channelManager.manageChannel(channelId);				
 			}
 		});
 	}
