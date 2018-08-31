@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.github.theholywaffle.teamspeak3.TS3Api;
-import com.github.theholywaffle.teamspeak3.api.wrapper.Client;
 
 /**
  * Manages a list of all clients currently connected to the Teamspeak3 server.
@@ -14,9 +13,9 @@ import com.github.theholywaffle.teamspeak3.api.wrapper.Client;
  */
 public class ClientManager implements IClientManager {
 
-	TS3Api _ts3Api;
-	
 	HashMap<Integer, AoGClient> _clients;
+	
+	TS3Api _ts3Api;
 	
 	/**
 	 * Creates a new instance of the {@link ClientManager}
@@ -28,31 +27,6 @@ public class ClientManager implements IClientManager {
 	}
 	
 	/**
-	 * Refreshes the complete list of clients
-	 */
-	public void refreshAll() {
-		_clients.clear();
-		_ts3Api.getClients().forEach(c -> {manageClient(c);});
-	}
-	
-	/**
-	 * Adds a client to the manager
-	 * @param client The to be added {@link Client}
-	 */
-	public void manageClient(Client client) {
-		AoGClient aogClient = new AoGClient(client, _ts3Api);
-		_clients.put(client.getId(), aogClient);
-	}
-	
-	/**
-	 * Removes a client from the manager
-	 * @param clientId The client ID.
-	 */
-	public void unmanageClient(int clientId) {
-		_clients.remove(clientId);
-	}
-
-	/**
 	 * Gets all clients currently connected to the server.
 	 * @return A list with all connected clients.
 	 */
@@ -63,13 +37,14 @@ public class ClientManager implements IClientManager {
 		
 		for (AoGClient aogClient : base) {
 			if (aogClient.getClientType() == ClientType.VOICE) {
-				aogClients.add((IAoGClient) aogClient);
+				aogClient.refresh();
+				aogClients.add(aogClient);
 			}
 		}
 		
 		return aogClients;
 	}
-
+	
 	/**
 	 * Gets a client with the given {@code clientId}.
 	 * @param clientId The client ID.
@@ -77,9 +52,12 @@ public class ClientManager implements IClientManager {
 	 */
 	@Override
 	public IAoGClient getClientById(int clientId) {
-		return (IAoGClient) _clients.get(clientId);
+		AoGClient client = _clients.get(clientId);
+		client.refresh();
+		
+		return client;
 	}
-
+	
 	/**
 	 * Gets a client with the given {@code name}.
 	 * @param name The client name.
@@ -89,10 +67,38 @@ public class ClientManager implements IClientManager {
 	public IAoGClient getClientByName(String name) {
 		for (AoGClient client : _clients.values()) {
 			if (client.getNickname().contains(name)) {
-				return (IAoGClient) client;
+				client.refresh();
+				
+				return client;
 			}
 		}
 		
 		return null;
+	}
+
+	/**
+	 * Adds a client to the manager.
+	 * @param clientId The Client ID.
+	 */
+	public void manageClient(int clientId) {
+		AoGClient aogClient = new AoGClient(clientId, _ts3Api);
+		aogClient.refresh();
+		_clients.put(clientId, aogClient);
+	}
+
+	/**
+	 * Refreshes the complete list of clients
+	 */
+	public void refreshList() {
+		_clients.clear();
+		_ts3Api.getClients().forEach(c -> {manageClient(c.getId());});
+	}
+
+	/**
+	 * Removes a client from the manager
+	 * @param clientId The client ID.
+	 */
+	public void unmanageClient(int clientId) {
+		_clients.remove(clientId);
 	}
 }

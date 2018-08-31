@@ -83,8 +83,8 @@ public class AoGBot {
 		
 		registerListener(api);
 		
-		_clientManager.refreshAll();
-		_channelManager.refreshAll();
+		_clientManager.refreshList();
+		_channelManager.refreshList();
 		_channelManager.locateClients(_clientManager.getAllClients());
 		
 		loadModules();
@@ -159,10 +159,7 @@ public class AoGBot {
 			
 			@Override
 			public void onClientJoin(ClientJoinEvent clientJoinEvent) {
-				String clientName = clientJoinEvent.getClientNickname();
-				Client client = api.getClientByNameExact(clientName, false);
-				
-				_clientManager.manageClient(client);
+				_clientManager.manageClient(clientJoinEvent.getClientId());
 			}
 			
 			@Override

@@ -17,7 +17,7 @@ public class ChannelManager implements IChannelManager {
 		_channels = new HashMap<Integer, AoGChannel>();
 	}
 
-	public void refreshAll() {
+	public void refreshList() {
 		_channels.clear();
 		List<Channel> channels = _ts3Api.getChannels();
 		channels.forEach(c -> {manageChannel(c, false);});
@@ -59,7 +59,7 @@ public class ChannelManager implements IChannelManager {
 	public void locateClients(List<IAoGClient> clients) {
 		for (IAoGClient rawClient : clients) {
 			AoGClient client = (AoGClient) rawClient;
-			int channelId = client.getInternalClient().getChannelId();
+			int channelId = client.getChannelId();
 			AoGChannel channel = _channels.get(channelId);
 			channel.clientJoin(client);
 		}
