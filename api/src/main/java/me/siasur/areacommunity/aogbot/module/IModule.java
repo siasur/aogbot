@@ -1,4 +1,3 @@
-
 package me.siasur.areacommunity.aogbot.module;
 
 public interface IModule {
@@ -8,4 +7,6 @@ public interface IModule {
 	public void disable();
 	
 	public String getName();
+	
+	public boolean isEnabled();
 }

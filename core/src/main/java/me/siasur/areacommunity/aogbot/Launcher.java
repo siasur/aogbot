@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
+
 import me.siasur.areacommunity.aogbot.config.AoGBotConfig;
 
 /***
@@ -17,6 +18,7 @@ public class Launcher {
 	 * @param args The command line arguments
 	 */
 	public static void main(String[] args) {
+		System.out.println();
 		OptionParser optParser = getParser();
 		OptionSet options = optParser.parse(args);
 

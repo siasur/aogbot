@@ -20,7 +20,7 @@ public class AoGBotConfig {
 		config.getSettings().getHomeChannel().setChannelId(-1);
 		config.getSettings().getHomeChannel().setForced(false);
 
-		config.getSettings().getSlowmode().setEnabled(false);
+		config.getSettings().getSlowmode().setEnabled(true);
 		config.getSettings().getReconnect().setEnabled(true);
 
 		// File configFile = new File(path);

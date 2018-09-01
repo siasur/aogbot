@@ -205,7 +205,7 @@ public class AoGChannel implements IAoGChannel {
 	}
 
 	/**
-	 * Sets the parent {@link AoGClient}
+	 * Sets the parent {@link AoGChannel}
 	 * @param parent the parent
 	 */
 	public void setParent(final AoGChannel parent) {
@@ -217,10 +217,18 @@ public class AoGChannel implements IAoGChannel {
 		_parent.addChild(this);
 	}
 
+	/**
+	 * Adds the given {@link AoGChannel} as a child
+	 * @param channel the child channel
+	 */
 	private void addChild(final AoGChannel channel) {
 		_childs.add(channel);
 	}
 
+	/**
+	 * Removes the given {@link AoGChannel} from the childs
+	 * @param channel the child channel
+	 */
 	private void removeChild(final AoGChannel channel) {
 		_childs.remove(channel);
 	}

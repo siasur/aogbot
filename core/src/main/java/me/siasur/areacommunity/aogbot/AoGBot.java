@@ -22,6 +22,7 @@ import me.siasur.areacommunity.aogbot.bridge.IChannelManager;
 import me.siasur.areacommunity.aogbot.bridge.IClientManager;
 import me.siasur.areacommunity.aogbot.config.AoGBotConfig;
 import me.siasur.areacommunity.aogbot.config.ServerIdentifierConfigOption;
+import me.siasur.areacommunity.aogbot.module.IModuleManager;
 import me.siasur.areacommunity.aogbot.module.ModuleManager;
 import me.siasur.areacommunity.aogbot.module.TestModule;
 import me.siasur.areacommunity.aogbot.utility.ServiceLocator;
@@ -46,6 +47,7 @@ public class AoGBot {
 	AoGBot(AoGBotConfig config) {
 		_config = config;
 		_moduleManager = new ModuleManager();
+		ServiceLocator.getServiceLocator().addService(IModuleManager.class, _moduleManager);
 	}
 
 	/**

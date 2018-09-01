@@ -1,25 +1,35 @@
 package me.siasur.areacommunity.aogbot.module;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import me.siasur.areacommunity.aogbot.module.IModule;
 
-public class ModuleManager {
+public class ModuleManager implements IModuleManager {
 
-	private List<IModule> _modules;
+	private Map<String, IModule> _modules;
 	
 	public ModuleManager() {
-		_modules = new ArrayList<IModule>();
+		_modules = new HashMap<String, IModule>();
 	}
 	
 	public void addModule(IModule module) {
-		_modules.add(module);
+		_modules.put(module.getName(), module);
 	}
 
 	public void enableAllModules() {
-		for (IModule module : _modules) {
+		for (IModule module : _modules.values()) {
 			module.enable();
 		}
+	}
+
+	@Override
+	public IModule getModule(String name) {
+		return _modules.get(name);
+	}
+
+	@Override
+	public boolean isModuleEnabled(String name) {
+		return _modules.get(name).isEnabled();
 	}
 }
