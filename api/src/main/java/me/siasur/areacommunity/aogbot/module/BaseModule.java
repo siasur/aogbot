@@ -1,18 +1,6 @@
 package me.siasur.areacommunity.aogbot.module;
 
-public class BaseModule implements IModule {
-
-	@Override
-	public void enable() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void disable() {
-		// TODO Auto-generated method stub
-		
-	}
+public abstract class BaseModule implements IModule {
 
 	@Override
 	public String getName() {

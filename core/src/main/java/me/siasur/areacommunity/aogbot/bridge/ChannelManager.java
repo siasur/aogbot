@@ -7,11 +7,19 @@ import java.util.List;
 import com.github.theholywaffle.teamspeak3.TS3Api;
 import com.github.theholywaffle.teamspeak3.api.wrapper.Channel;
 
+/**
+ * Manages a list of all channels the Teamspeak3 server has.
+ * 
+ */
 public class ChannelManager implements IChannelManager {
 
 	HashMap<Integer, AoGChannel> _channels;
 	TS3Api _ts3Api;
 
+	/**
+	 * Initializes a new instance of the {@link ChannelManager}
+	 * @param ts3Api the {@link TS3Api}
+	 */
 	public ChannelManager(final TS3Api ts3Api) {
 		_ts3Api = ts3Api;
 		_channels = new HashMap<Integer, AoGChannel>();
@@ -35,6 +43,10 @@ public class ChannelManager implements IChannelManager {
 		return channel;
 	}
 
+	/**
+	 * Finds the channel in which each given client is
+	 * @param clients the {@link List<IAoGClient>} of clients that should be located.
+	 */
 	public void locateClients(final List<IAoGClient> clients) {
 		for (final IAoGClient rawClient : clients) {
 			final AoGClient client = (AoGClient) rawClient;
@@ -44,17 +56,29 @@ public class ChannelManager implements IChannelManager {
 		}
 	}
 
+	/**
+	 * Adds a channel to the manager
+	 * @param channelId the channel Id
+	 */
 	public void manageChannel(final int channelId) {
 		manageChannel(channelId, true);
 	}
 
-	public void moveChannel(final int channelId, final int parentId) {
+	/**
+	 * Sets the parent channel for a channel
+	 * @param channelId the id of the child channel
+	 * @param parentId the id of the parent channel
+	 */
+	public void setParentChannel(final int channelId, final int parentId) {
 		final AoGChannel channel = _channels.get(channelId);
 		final AoGChannel parent = _channels.get(parentId);
 
 		channel.setParent(parent);
 	}
 
+	/**
+	 * Refreshes the complete list of channels
+	 */
 	public void refreshList() {
 		_channels.clear();
 		final List<Channel> channels = _ts3Api.getChannels();
@@ -64,14 +88,18 @@ public class ChannelManager implements IChannelManager {
 		buildHierarchy(channels);
 	}
 
-	public void unmanageChannel(final AoGChannel channel) {
-		unmanageChannel(channel.getId());
-	}
-
+	/**
+	 * Removes a channel from the manager
+	 * @param channelId the Channel ID
+	 */
 	public void unmanageChannel(final int channelId) {
 		_channels.remove(channelId);
 	}
 
+	/**
+	 * Builds the channel hierarchy for all given channels
+	 * @param channels the {@link List<Channel>} of Channels
+	 */
 	private void buildHierarchy(final List<Channel> channels) {
 		channels.forEach(channel -> {
 			final int parentId = channel.getParentChannelId();

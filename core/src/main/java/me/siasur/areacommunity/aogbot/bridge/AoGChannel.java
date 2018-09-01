@@ -6,6 +6,10 @@ import java.util.List;
 import com.github.theholywaffle.teamspeak3.TS3Api;
 import com.github.theholywaffle.teamspeak3.api.wrapper.ChannelInfo;
 
+/**
+ * Represents a channel from the server
+ *
+ */
 public class AoGChannel implements IAoGChannel {
 
 	private int _channelId;
@@ -29,6 +33,11 @@ public class AoGChannel implements IAoGChannel {
 	private String _topic;
 	private final TS3Api _ts3Api;
 
+	/**
+	 * Initializes a new {@link AoGChannel} instance
+	 * @param channelId the channelId
+	 * @param ts3Api the {@link TS3Api}
+	 */
 	protected AoGChannel(final int channelId, final TS3Api ts3Api) {
 		_ts3Api = ts3Api;
 		_channelId = channelId;
@@ -36,11 +45,19 @@ public class AoGChannel implements IAoGChannel {
 		_childs = new ArrayList<AoGChannel>();
 	}
 
+	/**
+	 * Adds a client to the clients currently in this room
+	 * @param client The {@link AoGClient} who joined the {@link AoGChannel}
+	 */
 	public void clientJoin(final AoGClient client) {
 		client.setChannel(this);
 		_clients.add(client);
 	}
 
+	/**
+	 * Removes a client from the clients currently in this room
+	 * @param client The {@link AoGClient} who left the {@link AoGChannel}
+	 */
 	public void clientLeave(final AoGClient client) {
 		_clients.remove(client);
 	}
@@ -74,7 +91,6 @@ public class AoGChannel implements IAoGChannel {
 
 	@Override
 	public String getDescription() {
-		// TODO Auto-generated method stub
 		return _description;
 	}
 
@@ -85,13 +101,11 @@ public class AoGChannel implements IAoGChannel {
 
 	@Override
 	public int getMaxClients() {
-		// TODO Auto-generated method stub
 		return _maxClients;
 	}
 
 	@Override
 	public int getMaxFamilyClients() {
-		// TODO Auto-generated method stub
 		return _maxFamilyClients;
 	}
 
@@ -116,19 +130,16 @@ public class AoGChannel implements IAoGChannel {
 
 	@Override
 	public String getPassword() {
-		// TODO Auto-generated method stub
 		return _password;
 	}
 
 	@Override
 	public String getPhoneticName() {
-		// TODO Auto-generated method stub
 		return _phoneticName;
 	}
 
 	@Override
 	public int getSecondsEmpty() {
-		// TODO Auto-generated method stub
 		return _secondsEmpty;
 	}
 
@@ -144,7 +155,6 @@ public class AoGChannel implements IAoGChannel {
 
 	@Override
 	public boolean isDefault() {
-		// TODO Auto-generated method stub
 		return _isDefault;
 	}
 
@@ -155,16 +165,17 @@ public class AoGChannel implements IAoGChannel {
 
 	@Override
 	public boolean isEncrypted() {
-		// TODO Auto-generated method stub
 		return _isEncrypted;
 	}
 
 	@Override
 	public boolean isForcedSilence() {
-		// TODO Auto-generated method stub
 		return _isForcedSilence;
 	}
 
+	/**
+	 * Reloads the channel from the server
+	 */
 	public void refresh() {
 		final ChannelInfo channelInfo = _ts3Api.getChannelInfo(_channelId);
 
@@ -193,13 +204,16 @@ public class AoGChannel implements IAoGChannel {
 		}
 	}
 
-	public void setParent(final AoGChannel channel) {
+	/**
+	 * Sets the parent {@link AoGClient}
+	 * @param parent the parent
+	 */
+	public void setParent(final AoGChannel parent) {
 		if (_parent != null) {
 			_parent.removeChild(this);
 		}
 
-		_parent = channel;
-
+		_parent = parent;
 		_parent.addChild(this);
 	}
 

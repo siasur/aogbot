@@ -18,7 +18,7 @@ public class ClientManager implements IClientManager {
 	TS3Api _ts3Api;
 	
 	/**
-	 * Creates a new instance of the {@link ClientManager}
+	 * Initializes a new instance of the {@link ClientManager}
 	 * @param ts3Api
 	 */
 	public ClientManager(TS3Api ts3Api) {

@@ -7,6 +7,10 @@ import com.github.theholywaffle.teamspeak3.api.ClientProperty;
 import com.github.theholywaffle.teamspeak3.api.TextMessageTargetMode;
 import com.github.theholywaffle.teamspeak3.api.wrapper.ClientInfo;
 
+/**
+ * Represents a client that is currently connected to the server
+ *
+ */
 public class AoGClient implements IAoGClient {
 
 	private String _avatar;
@@ -15,6 +19,7 @@ public class AoGClient implements IAoGClient {
 	private BandwithUsage _bandwidthUsageLastSecond;
 	private boolean _canTalk;
 	private AoGChannel _channel;
+	private int _channelId;
 	private int _clientId;
 	private ClientType _clientType;
 	private Date _createdDate;
@@ -31,7 +36,6 @@ public class AoGClient implements IAoGClient {
 	private boolean _isPrioritySpeaker;
 	private boolean _isRecording;
 	private boolean _isRequestingToTalk;
-	// private boolean _isTalking;
 	private Date _lastConnectedDate;
 	private String _loginName;
 	private String _metaData;
@@ -46,8 +50,12 @@ public class AoGClient implements IAoGClient {
 	private String _uniqueIdentifier;
 	private int _unreadMessagesCount;
 	private String _version;
-	private int _channelId;
 
+	/**
+	 * Initializes a new instance of the {@link AoGClient}
+	 * @param clientId the clientId
+	 * @param ts3Api the {@link TS3Api}
+	 */
 	protected AoGClient(int clientId, TS3Api ts3Api) {
 		_clientId = clientId;
 		_ts3Api = ts3Api;
@@ -81,6 +89,14 @@ public class AoGClient implements IAoGClient {
 	@Override
 	public IAoGChannel getChannel() {
 		return _channel;
+	}
+
+	/**
+	 * Gets the id of the channel the client is currently in
+	 * @return the {@code channelId}
+	 */
+	public int getChannelId() {
+		return _channelId;
 	}
 
 	@Override
@@ -223,15 +239,15 @@ public class AoGClient implements IAoGClient {
 		return _isRecording;
 	}
 
-	@Override
-	public boolean isRequestingToTalk() {
-		return _isRequestingToTalk;
-	}
-
 //	@Override
 //	public boolean isTalking() {
 //		return _isTalking;
 //	}
+
+	@Override
+	public boolean isRequestingToTalk() {
+		return _isRequestingToTalk;
+	}
 
 	@Override
 	public void kickFromChannel() {
@@ -306,21 +322,13 @@ public class AoGClient implements IAoGClient {
 	public void sendMessage(String message) {
 		_ts3Api.sendTextMessage(TextMessageTargetMode.CLIENT, _clientId, message);
 	}
-
+	
 	/**
 	 * Sets the channel in which the client is currently
 	 * @param channel the {@link AoGChannel}
 	 */
 	public void setChannel(AoGChannel channel) {
 		_channel = channel;
-	}
-	
-	/**
-	 * Gets the id of the channel the client is currently in
-	 * @return the {@code channelId}
-	 */
-	public int getChannelId() {
-		return _channelId;
 	}
 
 	@Override

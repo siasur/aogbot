@@ -1,4 +1,4 @@
-package me.siasur.areacommunity.aogbot.bridge;
+package me.siasur.areacommunity.aogbot.module;
 
 import java.util.ArrayList;
 import java.util.List;

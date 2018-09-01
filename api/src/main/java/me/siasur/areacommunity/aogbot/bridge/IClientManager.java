@@ -3,7 +3,7 @@ package me.siasur.areacommunity.aogbot.bridge;
 import java.util.List;
 
 /**
- * Manages a list of all clients currently connected to the Teamspeak3 server.
+ * Defines functions for the interaction with the ClientManager.
  * 
  */
 public interface IClientManager {
