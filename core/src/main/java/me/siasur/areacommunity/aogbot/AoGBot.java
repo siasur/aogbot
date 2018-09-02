@@ -1,5 +1,8 @@
 package me.siasur.areacommunity.aogbot;
 
+import java.util.Collection;
+import java.util.function.Function;
+
 import org.slf4j.ILoggerFactory;
 import org.slf4j.LoggerFactory;
 
@@ -27,6 +30,8 @@ import me.siasur.areacommunity.aogbot.bridge.IChannelManager;
 import me.siasur.areacommunity.aogbot.bridge.IClientManager;
 import me.siasur.areacommunity.aogbot.config.AoGBotConfig;
 import me.siasur.areacommunity.aogbot.config.ServerIdentifierConfigOption;
+import me.siasur.areacommunity.aogbot.event.BaseEvent;
+import me.siasur.areacommunity.aogbot.event.EventFactory;
 import me.siasur.areacommunity.aogbot.event.EventManager;
 import me.siasur.areacommunity.aogbot.event.IEventManager;
 import me.siasur.areacommunity.aogbot.module.IModuleManager;
@@ -56,6 +61,9 @@ public class AoGBot {
 		_config = config;
 		_moduleManager = new ModuleManager();
 		ServiceLocator.getServiceLocator().addService(IModuleManager.class, _moduleManager);
+		
+		_eventManager = new EventManager();
+		ServiceLocator.getServiceLocator().addService(IEventManager.class, _eventManager);
 	}
 
 	/**
@@ -218,6 +226,9 @@ public class AoGBot {
 				AoGClient client = (AoGClient) _clientManager.getClientById(clientId);
 				AoGChannel sourceChannel = (AoGChannel) client.getChannel();
 				AoGChannel targetChannel = (AoGChannel) _channelManager.getChannel(channelId);
+				
+				me.siasur.areacommunity.aogbot.event.ClientMovedEvent clientMoved = EventFactory.createClientMovedEvent(client, sourceChannel, targetChannel);
+				_eventManager.getHandlers(clientMoved.getClass(), clientMoved)
 				
 				// Send ClientMovedEvent to modules
 				
