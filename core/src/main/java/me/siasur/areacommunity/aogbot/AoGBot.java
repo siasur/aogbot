@@ -1,5 +1,8 @@
 package me.siasur.areacommunity.aogbot;
 
+import org.slf4j.ILoggerFactory;
+import org.slf4j.LoggerFactory;
+
 import com.github.theholywaffle.teamspeak3.TS3Api;
 import com.github.theholywaffle.teamspeak3.TS3Config;
 import com.github.theholywaffle.teamspeak3.TS3Query;
@@ -16,12 +19,16 @@ import com.github.theholywaffle.teamspeak3.api.event.TextMessageEvent;
 import com.github.theholywaffle.teamspeak3.api.reconnect.ConnectionHandler;
 import com.github.theholywaffle.teamspeak3.api.reconnect.ReconnectStrategy;
 
+import me.siasur.areacommunity.aogbot.bridge.AoGChannel;
+import me.siasur.areacommunity.aogbot.bridge.AoGClient;
 import me.siasur.areacommunity.aogbot.bridge.ChannelManager;
 import me.siasur.areacommunity.aogbot.bridge.ClientManager;
 import me.siasur.areacommunity.aogbot.bridge.IChannelManager;
 import me.siasur.areacommunity.aogbot.bridge.IClientManager;
 import me.siasur.areacommunity.aogbot.config.AoGBotConfig;
 import me.siasur.areacommunity.aogbot.config.ServerIdentifierConfigOption;
+import me.siasur.areacommunity.aogbot.event.EventManager;
+import me.siasur.areacommunity.aogbot.event.IEventManager;
 import me.siasur.areacommunity.aogbot.module.IModuleManager;
 import me.siasur.areacommunity.aogbot.module.ModuleManager;
 import me.siasur.areacommunity.aogbot.module.TestModule;
@@ -33,12 +40,13 @@ import me.siasur.areacommunity.aogbot.utility.ServiceLocator;
  */
 public class AoGBot {
 
-	private volatile int clientId;
+	private volatile int _clientId;
 	ChannelManager _channelManager;
 	ClientManager _clientManager;
 	AoGBotConfig _config;
 
 	ModuleManager _moduleManager;
+	EventManager _eventManager;
 
 	/**
 	 * Initializes a new instance of the {@link AoGBot}.
@@ -77,6 +85,8 @@ public class AoGBot {
 			}
 		});
 
+		ts3Config.setEnableCommunicationsLogging(true);
+		
 		final TS3Query query = new TS3Query(ts3Config);
 
 		query.connect();
@@ -133,7 +143,7 @@ public class AoGBot {
 
 		api.registerAllEvents();
 
-		clientId = api.whoAmI().getId();
+		_clientId = api.whoAmI().getId();
 	}
 
 	
@@ -193,7 +203,10 @@ public class AoGBot {
 
 			@Override
 			public void onClientMoved(ClientMovedEvent clientMovedEvent) {
-				if (clientMovedEvent.getClientId() == clientId) {
+				int clientId = clientMovedEvent.getClientId();
+				int channelId = clientMovedEvent.getTargetChannelId();
+				
+				if (clientMovedEvent.getClientId() == _clientId) {
 					if (_config.getSettings().getHomeChannel().isForced()
 							&& _config.getSettings().getHomeChannel().getChannelId() > 0) {
 						api.moveQuery(_config.getSettings().getHomeChannel().getChannelId());
@@ -201,11 +214,21 @@ public class AoGBot {
 
 					return;
 				}
+				
+				AoGClient client = (AoGClient) _clientManager.getClientById(clientId);
+				AoGChannel sourceChannel = (AoGChannel) client.getChannel();
+				AoGChannel targetChannel = (AoGChannel) _channelManager.getChannel(channelId);
+				
+				// Send ClientMovedEvent to modules
+				
+				sourceChannel.clientLeave(client);
+				targetChannel.clientJoin(client);
+				
 			}
 
 			@Override
 			public void onTextMessage(TextMessageEvent textMessageEvent) {
-				if (textMessageEvent.getInvokerId() == clientId) {
+				if (textMessageEvent.getInvokerId() == _clientId) {
 					return;
 				}
 			}
