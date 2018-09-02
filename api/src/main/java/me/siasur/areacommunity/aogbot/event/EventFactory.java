@@ -9,8 +9,8 @@ public class EventFactory {
 		
 	}
 	
-	public static ClientMovedEvent createClientMovedEvent(IAoGClient invoker, IAoGChannel source, IAoGChannel target) {
-		ClientMovedEvent event = new ClientMovedEvent();
+	public static ClientMoveEvent createClientMovedEvent(IAoGClient invoker, IAoGChannel source, IAoGChannel target) {
+		ClientMoveEvent event = new ClientMoveEvent();
 		
 		event.setInvoker(invoker);
 		event.setSourceChannel(source);

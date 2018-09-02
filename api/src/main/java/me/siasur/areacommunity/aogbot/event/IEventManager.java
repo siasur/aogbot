@@ -12,8 +12,8 @@ public interface IEventManager {
 	 * @param identifier
 	 * @param handler
 	 */
-	<T extends BaseEvent> void registerEventHandler(Class<T> event, String identifier, Function<T, Boolean> handler);
+	<T extends AoGEvent> void registerEventHandler(Class<T> event, String identifier, Function<T, Boolean> handler);
 	
-	<T extends BaseEvent> boolean removeEventHandler(Class<T> event, String identifier);
+	<T extends AoGEvent> boolean removeEventHandler(Class<T> event, String identifier);
 	
 }

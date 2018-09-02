@@ -1,49 +1,52 @@
 package me.siasur.areacommunity.aogbot.event;
 
-import java.util.Collection;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
 public class EventManager implements IEventManager {
 	
-	Map<Class<? extends BaseEvent>, EventHandler<? extends BaseEvent>> _newHandlers;
-	
-	Map<Class<? extends BaseEvent>, Map<String, Function<? extends BaseEvent, Boolean>>> _handlers;
+	Map<Class<? extends AoGEvent>, Map<String, Function<? extends AoGEvent, Boolean>>> _handlers;
 	
 	public EventManager() {
-		_handlers = new HashMap<Class<? extends BaseEvent>, Map<String,Function<? extends BaseEvent,Boolean>>>();
+		_handlers = new HashMap<Class<? extends AoGEvent>, Map<String,Function<? extends AoGEvent, Boolean>>>();
 	}
 	
 	@Override
-	public <T extends BaseEvent> void registerEventHandler(Class<T> event, String identifier, Function<T, Boolean> handler) {
+	public <T extends AoGEvent> void registerEventHandler(Class<T> event, String identifier, Function<T, Boolean> handler) {
 		if (!_handlers.containsKey(event)) {
-			_handlers.put(event, new HashMap<String,Function<? extends BaseEvent, Boolean>>());
+			_handlers.put(event, new HashMap<String,Function<? extends AoGEvent, Boolean>>());
 		}
 		
-		Map<String, Function<? extends BaseEvent, Boolean>> handlers = _handlers.get(event);
+		Map<String, Function<? extends AoGEvent, Boolean>> handlers = _handlers.get(event);
 		handlers.put(identifier, handler);
 	}
 
 	@Override
-	public <T extends BaseEvent> boolean removeEventHandler(Class<T> event, String identifier) {
+	public <T extends AoGEvent> boolean removeEventHandler(Class<T> event, String identifier) {
 		_handlers.get(event).remove(identifier);
 		return false;
 	}
 
-	public <T extends BaseEvent> void fireEvent(Class<T> event, T params) {
-		_handlers.get(event);
+	public <T extends AoGEvent> void fireEvent(Class<T> event, T params) {
+		boolean handled = false;
+		for (Function<? extends AoGEvent, Boolean> handler : _handlers.get(event).values()) {			
+			try {
+				// Hate to have to do it this way...
+				// But java says <? extends BaseEvent> is not compatible with <T extends BaseEvent>
+				Method theMethod = handler.getClass().getMethods()[0];
+				theMethod.setAccessible(true);
+				handled = (boolean) theMethod.invoke(handler, params);				
+			} catch (SecurityException | IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			if (handled) {
+				break;
+			}
+		} ;
 	}
-	
-//	public <T extends BaseEvent>void fireEvent(Class<T> clazz, T event) {
-//		if (!_handlers.containsKey(clazz)) {
-//			return;
-//		}
-//		
-//		Collection<Function<? extends BaseEvent, Boolean>> handlers = _handlers.get(clazz).values();
-//		
-//		for (Function<? extends BaseEvent, Boolean> handler : handlers) {
-//			handler.apply(event);
-//		}
-//	}
 }

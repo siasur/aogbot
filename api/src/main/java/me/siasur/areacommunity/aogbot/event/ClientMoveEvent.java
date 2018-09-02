@@ -2,12 +2,12 @@ package me.siasur.areacommunity.aogbot.event;
 
 import me.siasur.areacommunity.aogbot.bridge.IAoGChannel;
 
-public class ClientMovedEvent extends BaseEvent {
+public class ClientMoveEvent extends AoGEvent {
 
 	IAoGChannel _sourceChannel;
 	IAoGChannel _targetChannel;
 	
-	protected ClientMovedEvent() {
+	protected ClientMoveEvent() {
 		
 	}
 	
@@ -26,5 +26,4 @@ public class ClientMovedEvent extends BaseEvent {
 	public IAoGChannel getTargetChannel() {
 		return _targetChannel;
 	}
-	
 }
