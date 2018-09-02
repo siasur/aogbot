@@ -30,7 +30,8 @@ import me.siasur.areacommunity.aogbot.bridge.IChannelManager;
 import me.siasur.areacommunity.aogbot.bridge.IClientManager;
 import me.siasur.areacommunity.aogbot.config.AoGBotConfig;
 import me.siasur.areacommunity.aogbot.config.ServerIdentifierConfigOption;
-import me.siasur.areacommunity.aogbot.event.BaseEvent;
+import me.siasur.areacommunity.aogbot.event.AoGEvent;
+import me.siasur.areacommunity.aogbot.event.ClientMoveEvent;
 import me.siasur.areacommunity.aogbot.event.EventFactory;
 import me.siasur.areacommunity.aogbot.event.EventManager;
 import me.siasur.areacommunity.aogbot.event.IEventManager;
@@ -93,7 +94,7 @@ public class AoGBot {
 			}
 		});
 
-		ts3Config.setEnableCommunicationsLogging(true);
+		//ts3Config.setEnableCommunicationsLogging(true);
 		
 		final TS3Query query = new TS3Query(ts3Config);
 
@@ -227,14 +228,13 @@ public class AoGBot {
 				AoGChannel sourceChannel = (AoGChannel) client.getChannel();
 				AoGChannel targetChannel = (AoGChannel) _channelManager.getChannel(channelId);
 				
-				me.siasur.areacommunity.aogbot.event.ClientMovedEvent clientMoved = EventFactory.createClientMovedEvent(client, sourceChannel, targetChannel);
-				_eventManager.getHandlers(clientMoved.getClass(), clientMoved)
+				ClientMoveEvent clientMoved = EventFactory.createClientMovedEvent(client, sourceChannel, targetChannel);
+				_eventManager.fireEvent(ClientMoveEvent.class, clientMoved);
 				
 				// Send ClientMovedEvent to modules
 				
 				sourceChannel.clientLeave(client);
 				targetChannel.clientJoin(client);
-				
 			}
 
 			@Override
