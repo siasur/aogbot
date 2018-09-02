@@ -68,6 +68,14 @@ public class BotConsole implements Runnable {
 					System.out.println(String.format("%d | %s", client.getId(), client.getNickname()));
 				}
 			}
+			
+			if (userInput.startsWith("whereis ")) {
+				String args = userInput.substring(8);
+				int clientId = Integer.parseInt(args);
+				
+				IAoGClient client = clientManager.getClientById(clientId);
+				System.out.println(String.format("Der client \"%s\" (%d) befindet sich im Channel \"%s\".", client.getNickname(), clientId, client.getChannel().GetName()));
+			}
 
 		} while (_running);
 
