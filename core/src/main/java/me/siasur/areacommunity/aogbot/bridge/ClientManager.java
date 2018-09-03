@@ -115,7 +115,7 @@ public class ClientManager implements IClientManager {
 	 * @param clientId
 	 *            The client ID.
 	 */
-	public void unmanageClient(int clientId) {
-		_clients.remove(clientId);
+	public AoGClient unmanageClient(int clientId) {
+		return _clients.remove(clientId);
 	}
 }

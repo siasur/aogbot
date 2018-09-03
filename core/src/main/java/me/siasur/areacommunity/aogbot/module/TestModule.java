@@ -3,6 +3,7 @@ package me.siasur.areacommunity.aogbot.module;
 import me.siasur.areacommunity.aogbot.bridge.IAoGChannel;
 import me.siasur.areacommunity.aogbot.bridge.IAoGClient;
 import me.siasur.areacommunity.aogbot.bridge.IClientManager;
+import me.siasur.areacommunity.aogbot.event.ClientJoinEvent;
 import me.siasur.areacommunity.aogbot.event.ClientMoveEvent;
 import me.siasur.areacommunity.aogbot.event.IEventManager;
 import me.siasur.areacommunity.aogbot.event.MessageEvent;
@@ -38,11 +39,22 @@ public class TestModule extends BaseModule {
 		
 		return false;
 	}
+	
+	public boolean kickHitler(ClientJoinEvent ev) {
+		IAoGClient client = ev.getClient();
+		
+		if (client.getNickname().contains("Hitler")) {
+			client.poke("Sorry, having this nickname is not tolerated on this server!");
+			client.kickFromServer("Please change your name!");
+			
+			return true;
+		}
+		
+		return false;
+	}
 
 	@Override
 	protected void onDisable() {
-		// TODO Auto-generated method stub
-
 		IEventManager eventManager = ServiceLocator.getServiceLocator().getService(IEventManager.class);
 
 		eventManager.removeEventHandler(ClientMoveEvent.class, "testing");
@@ -59,5 +71,6 @@ public class TestModule extends BaseModule {
 
 		eventManager.registerEventHandler(ClientMoveEvent.class, "testing", this::testing);
 		eventManager.registerEventHandler(MessageEvent.class, "pokeback", this::pokeback);
+		eventManager.registerEventHandler(ClientJoinEvent.class, "kickHitler", this::kickHitler);
 	}
 }

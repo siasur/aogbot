@@ -3,7 +3,6 @@ package me.siasur.areacommunity.aogbot;
 import com.github.theholywaffle.teamspeak3.TS3Api;
 import com.github.theholywaffle.teamspeak3.TS3Config;
 import com.github.theholywaffle.teamspeak3.TS3Query;
-import com.github.theholywaffle.teamspeak3.api.TextMessageTargetMode;
 import com.github.theholywaffle.teamspeak3.api.event.ChannelCreateEvent;
 import com.github.theholywaffle.teamspeak3.api.event.ChannelDeletedEvent;
 import com.github.theholywaffle.teamspeak3.api.event.ChannelDescriptionEditedEvent;
@@ -35,7 +34,6 @@ import me.siasur.areacommunity.aogbot.module.IModuleManager;
 import me.siasur.areacommunity.aogbot.module.ModuleManager;
 import me.siasur.areacommunity.aogbot.module.TestModule;
 import me.siasur.areacommunity.aogbot.utility.ServiceLocator;
-
 /**
  * The Heart of this application
  *
@@ -198,15 +196,27 @@ public class AoGBot {
 
 			@Override
 			public void onClientJoin(ClientJoinEvent clientJoinEvent) {
-				AoGClient client = _clientManager.manageClient(clientJoinEvent.getClientId());
-				_channelManager.locateClient(client);
+				int invokerId = clientJoinEvent.getInvokerId();
+				int clientId = clientJoinEvent.getClientId();
+				
+				AoGClient invoker = (AoGClient) _clientManager.getClientById(invokerId);
+				AoGClient client = _clientManager.manageClient(clientId);
+				_channelManager.locateClient(client);				
+				
+				me.siasur.areacommunity.aogbot.event.ClientJoinEvent join = EventBuilder.createClientJoinEvent(invoker, client);
+				_eventManager.fireEvent(me.siasur.areacommunity.aogbot.event.ClientJoinEvent.class, join);
 			}
 
 			@Override
 			public void onClientLeave(ClientLeaveEvent clientLeaveEvent) {
+				int invokerId = clientLeaveEvent.getInvokerId();
 				int clientId = clientLeaveEvent.getClientId();
-
-				_clientManager.unmanageClient(clientId);
+				
+				AoGClient invoker = (AoGClient) _clientManager.getClientById(invokerId);
+				AoGClient client = _clientManager.unmanageClient(clientId);
+				
+				me.siasur.areacommunity.aogbot.event.ClientLeaveEvent leave = EventBuilder.createClientLeaveEvent(invoker, client);
+				_eventManager.fireEvent(me.siasur.areacommunity.aogbot.event.ClientLeaveEvent.class, leave);
 			}
 
 			@Override

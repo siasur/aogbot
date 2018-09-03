@@ -30,4 +30,22 @@ public class EventBuilder {
 		return event;
 	}
 
+	public static ClientJoinEvent createClientJoinEvent(IAoGClient invoker, IAoGClient client) {
+		ClientJoinEvent event = new ClientJoinEvent();
+		
+		event.setInvoker(invoker);
+		event.setClient(client);
+		
+		return event;
+	}
+
+	public static ClientLeaveEvent createClientLeaveEvent(IAoGClient invoker, IAoGClient client) {
+		ClientLeaveEvent event = new ClientLeaveEvent();
+		
+		event.setInvoker(invoker);
+		event.setClient(client);
+		
+		return event;
+	}
+
 }
