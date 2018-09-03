@@ -16,7 +16,12 @@ public class EventManager implements IEventManager {
 
 	public <T extends AoGEvent> void fireEvent(Class<T> event, T params) {
 		boolean handled = false;
-		for (Function<? extends AoGEvent, Boolean> handler : _handlers.get(event).values()) {
+		Map<String, Function<? extends AoGEvent, Boolean>> handlerMapping = _handlers.get(event);
+		if (handlerMapping == null) {
+			return;
+		}
+		
+		for (Function<? extends AoGEvent, Boolean> handler : handlerMapping.values()) {
 			try {
 				// Hate to have to do it this way...
 				// But java says <? extends BaseEvent> is not compatible with <T extends

@@ -5,6 +5,7 @@ import me.siasur.areacommunity.aogbot.bridge.IAoGClient;
 import me.siasur.areacommunity.aogbot.bridge.IClientManager;
 import me.siasur.areacommunity.aogbot.event.ClientMoveEvent;
 import me.siasur.areacommunity.aogbot.event.IEventManager;
+import me.siasur.areacommunity.aogbot.event.MessageEvent;
 import me.siasur.areacommunity.aogbot.utility.ServiceLocator;
 
 public class TestModule extends BaseModule {
@@ -29,6 +30,14 @@ public class TestModule extends BaseModule {
 		System.out.println(message);
 		return false;
 	}
+	
+	public boolean pokeback(MessageEvent ev) {
+		IAoGClient invoker = ev.getInvoker();
+		
+		invoker.poke(ev.getMessage());
+		
+		return false;
+	}
 
 	@Override
 	protected void onDisable() {
@@ -49,5 +58,6 @@ public class TestModule extends BaseModule {
 		IEventManager eventManager = ServiceLocator.getServiceLocator().getService(IEventManager.class);
 
 		eventManager.registerEventHandler(ClientMoveEvent.class, "testing", this::testing);
+		eventManager.registerEventHandler(MessageEvent.class, "pokeback", this::pokeback);
 	}
 }

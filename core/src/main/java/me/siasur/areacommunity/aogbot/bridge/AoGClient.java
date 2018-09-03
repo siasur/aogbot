@@ -266,7 +266,7 @@ public class AoGClient implements IAoGClient {
 
 	@Override
 	public void poke(String message) {
-		_ts3Api.pokeClient(_clientId, message);
+		_ts3Api.pokeClient(_clientId, message.substring(0, Math.min(message.length(), 100)));
 	}
 
 	/**
