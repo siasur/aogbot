@@ -53,8 +53,11 @@ public class AoGClient implements IAoGClient {
 
 	/**
 	 * Initializes a new instance of the {@link AoGClient}
-	 * @param clientId the clientId
-	 * @param ts3Api the {@link TS3Api}
+	 * 
+	 * @param clientId
+	 *            the clientId
+	 * @param ts3Api
+	 *            the {@link TS3Api}
 	 */
 	protected AoGClient(int clientId, TS3Api ts3Api) {
 		_clientId = clientId;
@@ -93,6 +96,7 @@ public class AoGClient implements IAoGClient {
 
 	/**
 	 * Gets the id of the channel the client is currently in
+	 * 
 	 * @return the {@code channelId}
 	 */
 	public int getChannelId() {
@@ -239,10 +243,10 @@ public class AoGClient implements IAoGClient {
 		return _isRecording;
 	}
 
-//	@Override
-//	public boolean isTalking() {
-//		return _isTalking;
-//	}
+	// @Override
+	// public boolean isTalking() {
+	// return _isTalking;
+	// }
 
 	@Override
 	public boolean isRequestingToTalk() {
@@ -322,17 +326,19 @@ public class AoGClient implements IAoGClient {
 	public void sendMessage(String message) {
 		_ts3Api.sendTextMessage(TextMessageTargetMode.CLIENT, _clientId, message);
 	}
-	
+
 	/**
 	 * Sets the channel in which the client is currently
-	 * @param channel the {@link AoGChannel}
+	 * 
+	 * @param channel
+	 *            the {@link AoGChannel}
 	 */
 	public void setChannel(AoGChannel channel) {
 		_channel = channel;
 	}
 
 	@Override
-	public void setDescription(String description) {		
+	public void setDescription(String description) {
 		_description = description;
 		_ts3Api.editClient(_clientId, ClientProperty.CLIENT_DESCRIPTION, description);
 	}

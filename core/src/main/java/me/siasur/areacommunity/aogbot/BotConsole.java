@@ -22,6 +22,7 @@ public class BotConsole implements Runnable {
 
 	/**
 	 * Initializes a new instance of the {@link BotConsole}.
+	 * 
 	 * @param query
 	 */
 	public BotConsole(TS3Query query) {
@@ -38,7 +39,7 @@ public class BotConsole implements Runnable {
 		Scanner scanner = new Scanner(System.in);
 
 		IClientManager clientManager = ServiceLocator.getServiceLocator().getService(IClientManager.class);
-		
+
 		do {
 			String userInput = scanner.nextLine();
 
@@ -53,28 +54,29 @@ public class BotConsole implements Runnable {
 					c.poke(userInput.substring(userInput.indexOf(" ") + 1));
 				});
 			}
-			
+
 			if (userInput.startsWith("poke ")) {
 				String args = userInput.substring(5);
 				String message = args.substring(args.indexOf(" ") + 1);
 				int clientId = Integer.parseInt(args.substring(0, args.indexOf(" ")));
-				
+
 				clientManager.getClientById(clientId).poke(message);
 			}
-			
+
 			if (userInput.startsWith("clientlist")) {
 				List<IAoGClient> clients = clientManager.getAllClients();
 				for (IAoGClient client : clients) {
 					System.out.println(String.format("%d | %s", client.getId(), client.getNickname()));
 				}
 			}
-			
+
 			if (userInput.startsWith("whereis ")) {
 				String args = userInput.substring(8);
 				int clientId = Integer.parseInt(args);
-				
+
 				IAoGClient client = clientManager.getClientById(clientId);
-				System.out.println(String.format("Der client \"%s\" (%d) befindet sich im Channel \"%s\".", client.getNickname(), clientId, client.getChannel().GetName()));
+				System.out.println(String.format("Der client \"%s\" (%d) befindet sich im Channel \"%s\".",
+						client.getNickname(), clientId, client.getChannel().GetName()));
 			}
 
 		} while (_running);

@@ -4,7 +4,6 @@ import java.util.Arrays;
 
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
-
 import me.siasur.areacommunity.aogbot.config.AoGBotConfig;
 
 /***
@@ -38,10 +37,7 @@ public class Launcher {
 		OptionParser parser = new OptionParser();
 
 		parser.acceptsAll(Arrays.asList("c", "config", "cfg", "cofiguration"), "Path to the configuration file.")
-			  .withRequiredArg()
-			  .ofType(String.class)
-			  .describedAs("path")
-			  .isRequired();
+				.withRequiredArg().ofType(String.class).describedAs("path").isRequired();
 
 		// parser.acceptsAll(Arrays.asList("h", "host"), "address of the teamspeak server")
 		// .withRequiredArg()
@@ -49,8 +45,7 @@ public class Launcher {
 		// .describedAs("ip-address")
 		// .isRequired();
 		//
-		// parser.acceptsAll(Arrays.asList("u", "user"), "Username for the query login")
-		// .withRequiredArg()
+		// parser.acceptsAll(Arrays.asList("u", "user"), "Username for the query login") .withRequiredArg()
 		// .ofType(String.class)
 		// .describedAs("username")
 		// .isRequired();

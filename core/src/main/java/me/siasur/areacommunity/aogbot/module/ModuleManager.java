@@ -3,16 +3,14 @@ package me.siasur.areacommunity.aogbot.module;
 import java.util.HashMap;
 import java.util.Map;
 
-import me.siasur.areacommunity.aogbot.module.IModule;
-
 public class ModuleManager implements IModuleManager {
 
 	private Map<String, IModule> _modules;
-	
+
 	public ModuleManager() {
 		_modules = new HashMap<String, IModule>();
 	}
-	
+
 	public void addModule(IModule module) {
 		_modules.put(module.getName(), module);
 	}

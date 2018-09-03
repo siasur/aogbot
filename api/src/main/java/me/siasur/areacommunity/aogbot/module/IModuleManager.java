@@ -8,11 +8,13 @@ public interface IModuleManager {
 
 	/**
 	 * Gets the module with the given name
-	 * @param name the name
+	 * 
+	 * @param name
+	 *            the name
 	 * @return the {@link IModule} if it's know to the manager, null otherwise
 	 */
 	public IModule getModule(String name);
-	
+
 	/**
 	 * Gets a value indicating whether the module is enabled.
 	 * 
@@ -21,5 +23,5 @@ public interface IModuleManager {
 	 * @see #setModuleState(boolean enabled)
 	 */
 	public boolean isModuleEnabled(String name);
-	
+
 }

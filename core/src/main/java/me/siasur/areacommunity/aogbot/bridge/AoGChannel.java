@@ -35,8 +35,11 @@ public class AoGChannel implements IAoGChannel {
 
 	/**
 	 * Initializes a new {@link AoGChannel} instance
-	 * @param channelId the channelId
-	 * @param ts3Api the {@link TS3Api}
+	 * 
+	 * @param channelId
+	 *            the channelId
+	 * @param ts3Api
+	 *            the {@link TS3Api}
 	 */
 	protected AoGChannel(final int channelId, final TS3Api ts3Api) {
 		_ts3Api = ts3Api;
@@ -47,7 +50,9 @@ public class AoGChannel implements IAoGChannel {
 
 	/**
 	 * Adds a client to the clients currently in this room
-	 * @param client The {@link AoGClient} who joined the {@link AoGChannel}
+	 * 
+	 * @param client
+	 *            The {@link AoGClient} who joined the {@link AoGChannel}
 	 */
 	public void clientJoin(final AoGClient client) {
 		client.setChannel(this);
@@ -56,7 +61,9 @@ public class AoGChannel implements IAoGChannel {
 
 	/**
 	 * Removes a client from the clients currently in this room
-	 * @param client The {@link AoGClient} who left the {@link AoGChannel}
+	 * 
+	 * @param client
+	 *            The {@link AoGClient} who left the {@link AoGChannel}
 	 */
 	public void clientLeave(final AoGClient client) {
 		_clients.remove(client);
@@ -206,7 +213,9 @@ public class AoGChannel implements IAoGChannel {
 
 	/**
 	 * Sets the parent {@link AoGChannel}
-	 * @param parent the parent
+	 * 
+	 * @param parent
+	 *            the parent
 	 */
 	public void setParent(final AoGChannel parent) {
 		if (_parent != null) {
@@ -219,7 +228,9 @@ public class AoGChannel implements IAoGChannel {
 
 	/**
 	 * Adds the given {@link AoGChannel} as a child
-	 * @param channel the child channel
+	 * 
+	 * @param channel
+	 *            the child channel
 	 */
 	private void addChild(final AoGChannel channel) {
 		_childs.add(channel);
@@ -227,7 +238,9 @@ public class AoGChannel implements IAoGChannel {
 
 	/**
 	 * Removes the given {@link AoGChannel} from the childs
-	 * @param channel the child channel
+	 * 
+	 * @param channel
+	 *            the child channel
 	 */
 	private void removeChild(final AoGChannel channel) {
 		_childs.remove(channel);

@@ -3,13 +3,15 @@ package me.siasur.areacommunity.aogbot.bridge;
 import java.util.Date;
 
 /**
- * Defines functions for the interaction with a client that is currently connected to the server
+ * Defines functions for the interaction with a client that is currently
+ * connected to the server
  * 
  */
 public interface IAoGClient {
 
 	/**
 	 * Gets a value indicating whether the client can talk.
+	 * 
 	 * @return {@code true}, if the client can talk, {@code false} otherwise.
 	 * 
 	 * @see #isRequestingToTalk()
@@ -17,13 +19,14 @@ public interface IAoGClient {
 	public boolean canTalk();
 
 	/**
-	 * Gets something about the avatar... Maybe the path... the ts3 api is bad documented...
+	 * Gets something about the avatar... Maybe the path... the ts3 api is bad
+	 * documented...
 	 */
 	public String getAvatar();
 
 	/**
 	 * Gets the away message.
-	 *  
+	 * 
 	 * @see #isAway()
 	 */
 	public String getAwayMessage();
@@ -70,15 +73,6 @@ public interface IAoGClient {
 	 * @see #setDescription(String description)
 	 */
 	public String getDescription();
-	
-	/**
-	 * Sets the client description.
-	 * 
-	 * @param description the new description
-	 * 
-	 * @see #getDescription()
-	 */
-	public void setDescription(String description);
 
 	/**
 	 * Gets the bandwidth usage for file transfer (in bytes?).
@@ -186,7 +180,8 @@ public interface IAoGClient {
 	/**
 	 * Gets a value indicating whether the client is channel commander.
 	 * 
-	 * @return {@code true}, if the client is channel commander, {@code false} otherwise.
+	 * @return {@code true}, if the client is channel commander, {@code false}
+	 *         otherwise.
 	 */
 	public boolean isChannelCommander();
 
@@ -202,7 +197,8 @@ public interface IAoGClient {
 	/**
 	 * Gets a value indicating whether the output is muted.
 	 * 
-	 * @return {@code true}, if the clients output is muted, {@code false} otherwise.
+	 * @return {@code true}, if the clients output is muted, {@code false}
+	 *         otherwise.
 	 * 
 	 * @see #isInputMuted()
 	 * @see #isOutputOnlyMuted()
@@ -212,7 +208,8 @@ public interface IAoGClient {
 	/**
 	 * Gets a value indicating whether only the output is muted.
 	 * 
-	 * @return {@code true}, if only the clients output is muted, {@code false} otherwise.
+	 * @return {@code true}, if only the clients output is muted, {@code false}
+	 *         otherwise.
 	 * 
 	 * @see IAoGClient#isOutputMuted()
 	 */
@@ -221,7 +218,8 @@ public interface IAoGClient {
 	/**
 	 * Gets a value indicating whether the client is priority speaker.
 	 * 
-	 * @return {@code true}, if the client is priority speaker, {@code false} otherwise.
+	 * @return {@code true}, if the client is priority speaker, {@code false}
+	 *         otherwise.
 	 */
 	public boolean isPrioritySpeaker();
 
@@ -235,7 +233,8 @@ public interface IAoGClient {
 	/**
 	 * Gets a value indicating whether the client is requesting to talk.
 	 * 
-	 * @return {@code true}, if the client is requesting to talk, {@code false} otherwise.
+	 * @return {@code true}, if the client is requesting to talk, {@code false}
+	 *         otherwise.
 	 * 
 	 * @see #getTalkRequestMessage()
 	 * @see #getTalkPower()
@@ -253,7 +252,8 @@ public interface IAoGClient {
 	/**
 	 * Kicks the client from the server.
 	 * 
-	 * @param message The reason for the kick
+	 * @param message
+	 *            The reason for the kick
 	 * 
 	 * @see #kickFromChannel()
 	 */
@@ -264,14 +264,26 @@ public interface IAoGClient {
 	 * <p>
 	 * The message will be cut if it is too long.
 	 * 
-	 * @param message The message that is shown to the client
+	 * @param message
+	 *            The message that is shown to the client
 	 */
 	public void poke(String message);
 
 	/**
 	 * Sends a message to the client.
 	 * 
-	 * @param message The message that is sent to the client
+	 * @param message
+	 *            The message that is sent to the client
 	 */
 	public void sendMessage(String message);
+
+	/**
+	 * Sets the client description.
+	 * 
+	 * @param description
+	 *            the new description
+	 * 
+	 * @see #getDescription()
+	 */
+	public void setDescription(String description);
 }

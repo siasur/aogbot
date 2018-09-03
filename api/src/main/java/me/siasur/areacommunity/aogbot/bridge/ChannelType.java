@@ -7,24 +7,24 @@ package me.siasur.areacommunity.aogbot.bridge;
 public enum ChannelType {
 
 	/**
-	 * A temporary channel.
+	 * A permantent channel.
 	 * <p>
-	 * It will be deleted when empty.
+	 * It will never be automatically deleted.
 	 */
-	TEMPORARY,
-	
+	PERMANENT,
+
 	/**
 	 * A semi permanent channel.
 	 * <p>
 	 * It will be deleted on the next server restart.
 	 */
 	SEMI_PERMANENT,
-	
+
 	/**
-	 * A permantent channel.
+	 * A temporary channel.
 	 * <p>
-	 * It will never be automatically deleted.
+	 * It will be deleted when empty.
 	 */
-	PERMANENT
-	
+	TEMPORARY
+
 }

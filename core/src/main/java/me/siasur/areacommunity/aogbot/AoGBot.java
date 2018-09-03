@@ -1,11 +1,5 @@
 package me.siasur.areacommunity.aogbot;
 
-import java.util.Collection;
-import java.util.function.Function;
-
-import org.slf4j.ILoggerFactory;
-import org.slf4j.LoggerFactory;
-
 import com.github.theholywaffle.teamspeak3.TS3Api;
 import com.github.theholywaffle.teamspeak3.TS3Config;
 import com.github.theholywaffle.teamspeak3.TS3Query;
@@ -30,9 +24,8 @@ import me.siasur.areacommunity.aogbot.bridge.IChannelManager;
 import me.siasur.areacommunity.aogbot.bridge.IClientManager;
 import me.siasur.areacommunity.aogbot.config.AoGBotConfig;
 import me.siasur.areacommunity.aogbot.config.ServerIdentifierConfigOption;
-import me.siasur.areacommunity.aogbot.event.AoGEvent;
 import me.siasur.areacommunity.aogbot.event.ClientMoveEvent;
-import me.siasur.areacommunity.aogbot.event.EventFactory;
+import me.siasur.areacommunity.aogbot.event.EventBuilder;
 import me.siasur.areacommunity.aogbot.event.EventManager;
 import me.siasur.areacommunity.aogbot.event.IEventManager;
 import me.siasur.areacommunity.aogbot.module.IModuleManager;
@@ -51,18 +44,19 @@ public class AoGBot {
 	ClientManager _clientManager;
 	AoGBotConfig _config;
 
-	ModuleManager _moduleManager;
 	EventManager _eventManager;
+	ModuleManager _moduleManager;
 
 	/**
 	 * Initializes a new instance of the {@link AoGBot}.
+	 * 
 	 * @param config
 	 */
 	AoGBot(AoGBotConfig config) {
 		_config = config;
 		_moduleManager = new ModuleManager();
 		ServiceLocator.getServiceLocator().addService(IModuleManager.class, _moduleManager);
-		
+
 		_eventManager = new EventManager();
 		ServiceLocator.getServiceLocator().addService(IEventManager.class, _eventManager);
 	}
@@ -94,8 +88,8 @@ public class AoGBot {
 			}
 		});
 
-		//ts3Config.setEnableCommunicationsLogging(true);
-		
+		// ts3Config.setEnableCommunicationsLogging(true);
+
 		final TS3Query query = new TS3Query(ts3Config);
 
 		query.connect();
@@ -122,7 +116,9 @@ public class AoGBot {
 
 	/**
 	 * Connects the client with the virtual server.
-	 * @param api The {@link TS3Api} which is used for the connection
+	 * 
+	 * @param api
+	 *            The {@link TS3Api} which is used for the connection
 	 */
 	private void connect(TS3Api api) {
 		String username = _config.getAuthentication().getName();
@@ -155,7 +151,6 @@ public class AoGBot {
 		_clientId = api.whoAmI().getId();
 	}
 
-	
 	private void loadModules() {
 		TestModule testModule = new TestModule();
 		_moduleManager.addModule(testModule);
@@ -200,7 +195,8 @@ public class AoGBot {
 
 			@Override
 			public void onClientJoin(ClientJoinEvent clientJoinEvent) {
-				_clientManager.manageClient(clientJoinEvent.getClientId());
+				AoGClient client = _clientManager.manageClient(clientJoinEvent.getClientId());
+				_channelManager.locateClient(client);
 			}
 
 			@Override
@@ -212,9 +208,10 @@ public class AoGBot {
 
 			@Override
 			public void onClientMoved(ClientMovedEvent clientMovedEvent) {
+				int invokerId = clientMovedEvent.getInvokerId();
 				int clientId = clientMovedEvent.getClientId();
 				int channelId = clientMovedEvent.getTargetChannelId();
-				
+
 				if (clientMovedEvent.getClientId() == _clientId) {
 					if (_config.getSettings().getHomeChannel().isForced()
 							&& _config.getSettings().getHomeChannel().getChannelId() > 0) {
@@ -223,16 +220,15 @@ public class AoGBot {
 
 					return;
 				}
-				
+
+				AoGClient invoker = (AoGClient) _clientManager.getClientById(invokerId);
 				AoGClient client = (AoGClient) _clientManager.getClientById(clientId);
 				AoGChannel sourceChannel = (AoGChannel) client.getChannel();
 				AoGChannel targetChannel = (AoGChannel) _channelManager.getChannel(channelId);
-				
-				ClientMoveEvent clientMoved = EventFactory.createClientMovedEvent(client, sourceChannel, targetChannel);
+
+				ClientMoveEvent clientMoved = EventBuilder.createClientMovedEvent(invoker, client, sourceChannel, targetChannel);
 				_eventManager.fireEvent(ClientMoveEvent.class, clientMoved);
-				
-				// Send ClientMovedEvent to modules
-				
+
 				sourceChannel.clientLeave(client);
 				targetChannel.clientJoin(client);
 			}
