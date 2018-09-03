@@ -21,4 +21,13 @@ public class EventBuilder {
 
 	}
 
+	public static MessageEvent createMessageEvent(IAoGClient invoker, String message) {
+		MessageEvent event = new MessageEvent();
+		
+		event.setInvoker(invoker);
+		event.setMessage(message);
+		
+		return event;
+	}
+
 }

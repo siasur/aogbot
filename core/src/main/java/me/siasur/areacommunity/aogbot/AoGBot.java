@@ -3,6 +3,7 @@ package me.siasur.areacommunity.aogbot;
 import com.github.theholywaffle.teamspeak3.TS3Api;
 import com.github.theholywaffle.teamspeak3.TS3Config;
 import com.github.theholywaffle.teamspeak3.TS3Query;
+import com.github.theholywaffle.teamspeak3.api.TextMessageTargetMode;
 import com.github.theholywaffle.teamspeak3.api.event.ChannelCreateEvent;
 import com.github.theholywaffle.teamspeak3.api.event.ChannelDeletedEvent;
 import com.github.theholywaffle.teamspeak3.api.event.ChannelDescriptionEditedEvent;
@@ -20,11 +21,13 @@ import me.siasur.areacommunity.aogbot.bridge.AoGChannel;
 import me.siasur.areacommunity.aogbot.bridge.AoGClient;
 import me.siasur.areacommunity.aogbot.bridge.ChannelManager;
 import me.siasur.areacommunity.aogbot.bridge.ClientManager;
+import me.siasur.areacommunity.aogbot.bridge.IAoGClient;
 import me.siasur.areacommunity.aogbot.bridge.IChannelManager;
 import me.siasur.areacommunity.aogbot.bridge.IClientManager;
 import me.siasur.areacommunity.aogbot.config.AoGBotConfig;
 import me.siasur.areacommunity.aogbot.config.ServerIdentifierConfigOption;
 import me.siasur.areacommunity.aogbot.event.ClientMoveEvent;
+import me.siasur.areacommunity.aogbot.event.MessageEvent;
 import me.siasur.areacommunity.aogbot.event.EventBuilder;
 import me.siasur.areacommunity.aogbot.event.EventManager;
 import me.siasur.areacommunity.aogbot.event.IEventManager;
@@ -238,6 +241,14 @@ public class AoGBot {
 				if (textMessageEvent.getInvokerId() == _clientId) {
 					return;
 				}
+				
+				String message = textMessageEvent.getMessage();
+				int invokerId = textMessageEvent.getInvokerId();
+				
+				IAoGClient invoker = _clientManager.getClientById(invokerId);
+					
+				MessageEvent msgEvent = EventBuilder.createMessageEvent(invoker, message);
+				_eventManager.fireEvent(MessageEvent.class, msgEvent);
 			}
 		});
 	}
