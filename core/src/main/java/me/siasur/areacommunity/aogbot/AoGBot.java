@@ -30,6 +30,7 @@ import me.siasur.areacommunity.aogbot.event.MessageEvent;
 import me.siasur.areacommunity.aogbot.event.EventBuilder;
 import me.siasur.areacommunity.aogbot.event.EventManager;
 import me.siasur.areacommunity.aogbot.event.IEventManager;
+import me.siasur.areacommunity.aogbot.module.GreeterModule;
 import me.siasur.areacommunity.aogbot.module.IModuleManager;
 import me.siasur.areacommunity.aogbot.module.ModuleManager;
 import me.siasur.areacommunity.aogbot.module.TestModule;
@@ -153,9 +154,10 @@ public class AoGBot {
 	}
 
 	private void loadModules() {
-		TestModule testModule = new TestModule();
-		_moduleManager.addModule(testModule);
-
+		//TestModule testModule = new TestModule();
+		GreeterModule greeter = new GreeterModule();
+		
+		_moduleManager.addModule(greeter);
 		_moduleManager.enableAllModules();
 	}
 
