@@ -5,14 +5,14 @@ public abstract class BaseModule implements IModule {
 	private boolean _isEnabled;
 
 	@Override
-	public void disable() {
+	public final void disable() {
 		_isEnabled = false;
 		onDisable();
 
 	}
 
 	@Override
-	public void enable() {
+	public final void enable() {
 		_isEnabled = true;
 		onEnable();
 	}
