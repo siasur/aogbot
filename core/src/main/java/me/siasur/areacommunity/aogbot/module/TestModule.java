@@ -63,7 +63,7 @@ public class TestModule extends BaseModule {
 	@Override
 	protected void onEnable() {
 		IClientManager clientManager = ServiceLocator.getServiceLocator().getService(IClientManager.class);
-		for (IAoGClient client : clientManager.getAllClients()) {
+		for (IAoGClient client : clientManager.getAllVoiceClients()) {
 			System.out.println(String.format("%d | %s", client.getId(), client.getNickname()));
 		}
 

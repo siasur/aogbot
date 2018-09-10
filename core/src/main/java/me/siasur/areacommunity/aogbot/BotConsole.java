@@ -50,7 +50,7 @@ public class BotConsole implements Runnable {
 			}
 
 			if (userInput.startsWith("pokeall ")) {
-				clientManager.getAllClients().forEach(c -> {
+				clientManager.getAllVoiceClients().forEach(c -> {
 					c.poke(userInput.substring(userInput.indexOf(" ") + 1));
 				});
 			}
@@ -66,7 +66,7 @@ public class BotConsole implements Runnable {
 			if (userInput.startsWith("clientlist")) {
 				List<IAoGClient> clients = clientManager.getAllClients();
 				for (IAoGClient client : clients) {
-					System.out.println(String.format("%d | %s", client.getId(), client.getNickname()));
+					System.out.println(String.format("%s: %d | %s", client.getClientType() ,client.getId(), client.getNickname()));
 				}
 			}
 

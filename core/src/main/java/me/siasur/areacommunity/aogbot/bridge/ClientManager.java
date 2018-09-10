@@ -2,6 +2,7 @@ package me.siasur.areacommunity.aogbot.bridge;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 
@@ -34,11 +35,36 @@ public class ClientManager implements IClientManager {
 	 */
 	@Override
 	public List<IAoGClient> getAllClients() {
+		return getClients(EnumSet.of(ClientType.VOICE, ClientType.SERVERQUERY));
+	}
+
+	/**
+	 * Gets all voice clients currently connected to the server.
+	 * 
+	 * @return A list with all connected clients.
+	 */
+	@Override
+	public List<IAoGClient> getAllVoiceClients() {
+		return getClients(EnumSet.of(ClientType.VOICE));
+	}
+	
+	/**
+	 * Gets all query clients currently connected to the server.
+	 * 
+	 * @return A list with all connected clients.
+	 */
+	@Override
+	public List<IAoGClient> getAllQueryClients() {
+		return getClients(EnumSet.of(ClientType.SERVERQUERY));
+	}
+	
+	private List<IAoGClient> getClients(EnumSet<ClientType> clientTypes)
+	{
 		Collection<AoGClient> base = _clients.values();
 		ArrayList<IAoGClient> aogClients = new ArrayList<>(base.size());
 
 		for (AoGClient aogClient : base) {
-			if (aogClient.getClientType() == ClientType.VOICE) {
+			if (clientTypes.contains(aogClient.getClientType())) {
 				aogClient.refresh();
 				aogClients.add(aogClient);
 			}

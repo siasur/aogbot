@@ -14,6 +14,20 @@ public interface IClientManager {
 	 * @return A list with all connected clients.
 	 */
 	List<IAoGClient> getAllClients();
+	
+	/**
+	 * Gets all voice clients currently connected to the server.
+	 * 
+	 * @return A list with all connected clients.
+	 */
+	List<IAoGClient> getAllVoiceClients();
+	
+	/**
+	 * Gets all query clients currently connected to the server.
+	 * 
+	 * @return A list with all connected clients.
+	 */
+	List<IAoGClient> getAllQueryClients();
 
 	/**
 	 * Gets a client with the given {@code clientId}.
