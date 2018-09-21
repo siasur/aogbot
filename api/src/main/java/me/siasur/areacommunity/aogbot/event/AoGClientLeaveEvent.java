@@ -2,11 +2,11 @@ package me.siasur.areacommunity.aogbot.event;
 
 import me.siasur.areacommunity.aogbot.bridge.IAoGClient;
 
-public class ClientJoinEvent extends AoGEvent {
+public class AoGClientLeaveEvent extends AoGBaseEvent {
 
 	IAoGClient _client;
 	
-	protected ClientJoinEvent() {
+	protected AoGClientLeaveEvent() {
 
 	}
 
@@ -17,4 +17,5 @@ public class ClientJoinEvent extends AoGEvent {
 	protected void setClient(IAoGClient client) {
 		_client = client;
 	}
+	
 }

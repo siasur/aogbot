@@ -5,9 +5,9 @@ import me.siasur.areacommunity.aogbot.bridge.IAoGClient;
 
 public class EventBuilder {
 
-	public static ClientMoveEvent createClientMovedEvent(IAoGClient invoker, IAoGClient client, IAoGChannel source,
+	public static AoGClientMoveEvent createClientMovedEvent(IAoGClient invoker, IAoGClient client, IAoGChannel source,
 			IAoGChannel target) {
-		ClientMoveEvent event = new ClientMoveEvent();
+		AoGClientMoveEvent event = new AoGClientMoveEvent();
 
 		event.setInvoker(invoker);
 		event.setClient(client);
@@ -21,8 +21,8 @@ public class EventBuilder {
 
 	}
 
-	public static MessageEvent createMessageEvent(IAoGClient invoker, String message) {
-		MessageEvent event = new MessageEvent();
+	public static AoGMessageEvent createMessageEvent(IAoGClient invoker, String message) {
+		AoGMessageEvent event = new AoGMessageEvent();
 		
 		event.setInvoker(invoker);
 		event.setMessage(message);
@@ -30,8 +30,8 @@ public class EventBuilder {
 		return event;
 	}
 
-	public static ClientJoinEvent createClientJoinEvent(IAoGClient invoker, IAoGClient client) {
-		ClientJoinEvent event = new ClientJoinEvent();
+	public static AoGClientJoinEvent createClientJoinEvent(IAoGClient invoker, IAoGClient client) {
+		AoGClientJoinEvent event = new AoGClientJoinEvent();
 		
 		event.setInvoker(invoker);
 		event.setClient(client);
@@ -39,8 +39,8 @@ public class EventBuilder {
 		return event;
 	}
 
-	public static ClientLeaveEvent createClientLeaveEvent(IAoGClient invoker, IAoGClient client) {
-		ClientLeaveEvent event = new ClientLeaveEvent();
+	public static AoGClientLeaveEvent createClientLeaveEvent(IAoGClient invoker, IAoGClient client) {
+		AoGClientLeaveEvent event = new AoGClientLeaveEvent();
 		
 		event.setInvoker(invoker);
 		event.setClient(client);

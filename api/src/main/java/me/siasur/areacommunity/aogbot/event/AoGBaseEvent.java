@@ -2,7 +2,7 @@ package me.siasur.areacommunity.aogbot.event;
 
 import me.siasur.areacommunity.aogbot.bridge.IAoGClient;
 
-public class AoGEvent implements IEvent {
+public class AoGBaseEvent {
 
 	private IAoGClient _invoker;
 
@@ -13,5 +13,5 @@ public class AoGEvent implements IEvent {
 	protected void setInvoker(IAoGClient invoker) {
 		_invoker = invoker;
 	}
-
+	
 }

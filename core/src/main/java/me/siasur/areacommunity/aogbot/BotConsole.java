@@ -2,12 +2,15 @@ package me.siasur.areacommunity.aogbot;
 
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 import com.github.theholywaffle.teamspeak3.TS3ApiAsync;
 import com.github.theholywaffle.teamspeak3.TS3Query;
 
 import me.siasur.areacommunity.aogbot.bridge.IAoGClient;
 import me.siasur.areacommunity.aogbot.bridge.IClientManager;
+import me.siasur.areacommunity.aogbot.module.IModule;
+import me.siasur.areacommunity.aogbot.module.IModuleManager;
 import me.siasur.areacommunity.aogbot.utility.ServiceLocator;
 
 /**
@@ -18,7 +21,6 @@ public class BotConsole implements Runnable {
 
 	private TS3ApiAsync _asyncApi;
 	private TS3Query _query;
-	private boolean _running;
 
 	/**
 	 * Initializes a new instance of the {@link BotConsole}.
@@ -26,7 +28,7 @@ public class BotConsole implements Runnable {
 	 * @param query
 	 */
 	public BotConsole(TS3Query query) {
-		_running = true;
+		ApplicationState.isRunning = true;
 		_query = query;
 		_asyncApi = query.getAsyncApi();
 	}
@@ -39,12 +41,13 @@ public class BotConsole implements Runnable {
 		Scanner scanner = new Scanner(System.in);
 
 		IClientManager clientManager = ServiceLocator.getServiceLocator().getService(IClientManager.class);
+		IModuleManager moduleManager = ServiceLocator.getServiceLocator().getService(IModuleManager.class);
 
 		do {
 			String userInput = scanner.nextLine();
 
 			if (userInput.startsWith("quit")) {
-				_running = false;
+				ApplicationState.isRunning = false;
 				_asyncApi.logout().getUninterruptibly();
 				_query.exit();
 			}
@@ -78,8 +81,26 @@ public class BotConsole implements Runnable {
 				System.out.println(String.format("Der client \"%s\" (%d) befindet sich im Channel \"%s\".",
 						client.getNickname(), clientId, client.getChannel().GetName()));
 			}
+			
+			if (userInput.startsWith("toggle ")) {
+				String moduleName = userInput.substring(7);
+				
+				IModule module = moduleManager.getModule(moduleName);
+				
+				if (module == null) {
+					Logger.getLogger("BotConsole").info("Module " + moduleName + " not found!");
+				}
+				
+				if (module.isEnabled()) {
+					module.disable();
+					Logger.getLogger("BotConsole").info("Module " + moduleName + " disabled!");
+				} else {
+					module.enable();
+					Logger.getLogger("BotConsole").info("Module " + moduleName + " enabled!");
+				}
+			}
 
-		} while (_running);
+		} while (ApplicationState.isRunning);
 
 		scanner.close();
 	}
