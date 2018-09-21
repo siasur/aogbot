@@ -1,61 +1,79 @@
 package me.siasur.areacommunity.aogbot.event;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
-public class EventManager implements IEventManager {
+import me.siasur.areacommunity.aogbot.module.IModule;
+import me.siasur.areacommunity.aogbot.module.ModuleManager;
 
-	Map<Class<? extends AoGEvent>, Map<String, Function<? extends AoGEvent, Boolean>>> _handlers;
+public class EventManager {
 
-	public EventManager() {
-		_handlers = new HashMap<Class<? extends AoGEvent>, Map<String, Function<? extends AoGEvent, Boolean>>>();
+	private ModuleManager _moduleManager;
+	private Thread _handlerThread;
+	
+	BlockingQueue<AoGBaseEvent> _eventQueue = new ArrayBlockingQueue<>(255, true);
+	
+	public EventManager(ModuleManager moduleManager) {
+		_moduleManager = moduleManager;
 	}
-
-	public <T extends AoGEvent> void fireEvent(Class<T> event, T params) {
-		boolean handled = false;
-		Map<String, Function<? extends AoGEvent, Boolean>> handlerMapping = _handlers.get(event);
-		if (handlerMapping == null) {
-			return;
+	
+	private List<EventHandleRequest> getHandlerRequests() {
+		List<EventHandleRequest> requests = new ArrayList<>();
+		
+		List<IModule> modules = _moduleManager.getAllModules();
+		
+		for (IModule module : modules) {
+			Class<?> moduleClass = module.getClass();
+			for (Method method : moduleClass.getDeclaredMethods()) {
+				if (!method.isAnnotationPresent(EventHandler.class)) {
+					// Method is not an event handler
+					continue;
+				}
+				
+				EventHandler handlerAnnotation = method.getAnnotation(EventHandler.class);
+				Priority priority = handlerAnnotation.priority();
+				
+				EventHandleRequest request = new EventHandleRequest(module, priority, method);
+				
+				requests.add(request);
+			}
 		}
 		
-		for (Function<? extends AoGEvent, Boolean> handler : handlerMapping.values()) {
-			try {
-				// Hate to have to do it this way...
-				// But java says <? extends BaseEvent> is not compatible with <T extends
-				// BaseEvent>
-				Method theMethod = handler.getClass().getMethods()[0];
-				theMethod.setAccessible(true);
-				handled = (boolean) theMethod.invoke(handler, params);
-			} catch (SecurityException | IllegalArgumentException | IllegalAccessException
-					| InvocationTargetException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		Collections.sort(requests, new Comparator<EventHandleRequest>() {
+
+			@Override
+			public int compare(EventHandleRequest o1, EventHandleRequest o2) {
+				int level1 = o1.getPriority().getLevel();
+				int level2 = o2.getPriority().getLevel();
+				
+				if (level1 < level2) {
+					return 1;
+				}
+				if (level1 > level2) {
+					return -1;
+				}
+				
+				return 0;
 			}
-
-			if (handled) {
-				break;
-			}
-		}
-		;
+			
+		});
+		
+		return requests;
 	}
-
-	@Override
-	public <T extends AoGEvent> void registerEventHandler(Class<T> event, String identifier,
-			Function<T, Boolean> handler) {
-		if (!_handlers.containsKey(event)) {
-			_handlers.put(event, new HashMap<String, Function<? extends AoGEvent, Boolean>>());
-		}
-
-		Map<String, Function<? extends AoGEvent, Boolean>> handlers = _handlers.get(event);
-		handlers.put(identifier, handler);
+	
+	public boolean queueEvent(AoGBaseEvent event) {
+		return _eventQueue.offer(event);
 	}
-
-	@Override
-	public <T extends AoGEvent> boolean removeEventHandler(Class<T> event, String identifier) {
-		_handlers.get(event).remove(identifier);
-		return false;
+	
+	public void beginHandle() {
+		if (_handlerThread == null) {
+			_handlerThread = new Thread(new AoGHandler(_eventQueue, getHandlerRequests()));
+			_handlerThread.start();
+		}
 	}
 }

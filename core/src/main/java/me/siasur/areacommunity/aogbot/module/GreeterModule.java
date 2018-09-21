@@ -1,35 +1,34 @@
 package me.siasur.areacommunity.aogbot.module;
 
 import me.siasur.areacommunity.aogbot.bridge.IAoGClient;
-import me.siasur.areacommunity.aogbot.event.ClientJoinEvent;
-import me.siasur.areacommunity.aogbot.event.IEventManager;
-import me.siasur.areacommunity.aogbot.event.MessageEvent;
+import me.siasur.areacommunity.aogbot.bridge.IClientManager;
+import me.siasur.areacommunity.aogbot.event.AoGClientJoinEvent;
+import me.siasur.areacommunity.aogbot.event.AoGMessageEvent;
+import me.siasur.areacommunity.aogbot.event.EventHandler;
 import me.siasur.areacommunity.aogbot.utility.ServiceLocator;
 
 public class GreeterModule extends BaseModule {
-
-	IEventManager eventManager;
-	
-	public GreeterModule() {
-		eventManager = ServiceLocator.getServiceLocator().getService(IEventManager.class);
-	}
 	
 	@Override
 	protected void onDisable() {
-		eventManager.removeEventHandler(ClientJoinEvent.class, "greeter_join");
-		eventManager.removeEventHandler(MessageEvent.class, "greeter_message");
+		System.out.println("Greeter disabled");
 	}
 
 	@Override
 	protected void onEnable() {
-		eventManager.registerEventHandler(ClientJoinEvent.class, "greeter_join", this::greetNewPeople);
-		eventManager.registerEventHandler(MessageEvent.class, "greeter_message", this::openChatOnBotCommand);
+		IClientManager clientManager = ServiceLocator.getServiceLocator().getService(IClientManager.class);
+		for (IAoGClient client : clientManager.getAllClients()) {
+			System.out.println(String.format("%d | %s", client.getId(), client.getNickname()));
+		}
 		
-		System.out.println("running...");
+		System.out.println("Greeter enabled");
 	}
 	
-	public boolean greetNewPeople(ClientJoinEvent event) {
+	@EventHandler
+	public void greetNewPeople(AoGClientJoinEvent event) {
 		IAoGClient client = event.getClient();
+		
+		getLogger().info("Yup... " + event.getClient().getNickname() + " joined...");
 		
 		if (client.getTotalConnections() == 1) {
 			client.poke(String.format("Hallo %s, herzlich willkommen auf dem AoG Teamspeak", client.getNickname()));
@@ -38,20 +37,21 @@ public class GreeterModule extends BaseModule {
 					+ "Wann immer du mich brauchst, schreibe einfach [color=#ff0000]!bot[/color] in der Eingangshalle."
 					+ "Ich werde dich dann anschreiben, so dass du mir dann im privaten Chat weitere Commands geben kannst.");
 		}
-		
-		return false;
 	}
 	
-	public boolean openChatOnBotCommand(MessageEvent event) {
+	@Override
+	public String getName() {
+		return "Greeter";
+	}
+	
+	@EventHandler
+	public void openChatOnBotCommand(AoGMessageEvent event) {
 		IAoGClient client = event.getInvoker();
 		String message = event.getMessage();
 		
 		if (message.startsWith("!bot")) {
 			client.sendMessage("Was kann ich für dich tun? :3");
 		}
-		
-		
-		return false;
 	}
 
 }

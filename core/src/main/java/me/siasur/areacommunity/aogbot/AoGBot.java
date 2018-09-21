@@ -1,5 +1,7 @@
 package me.siasur.areacommunity.aogbot;
 
+import java.util.logging.Logger;
+
 import com.github.theholywaffle.teamspeak3.TS3Api;
 import com.github.theholywaffle.teamspeak3.TS3Config;
 import com.github.theholywaffle.teamspeak3.TS3Query;
@@ -25,15 +27,16 @@ import me.siasur.areacommunity.aogbot.bridge.IChannelManager;
 import me.siasur.areacommunity.aogbot.bridge.IClientManager;
 import me.siasur.areacommunity.aogbot.config.AoGBotConfig;
 import me.siasur.areacommunity.aogbot.config.ServerIdentifierConfigOption;
-import me.siasur.areacommunity.aogbot.event.ClientMoveEvent;
-import me.siasur.areacommunity.aogbot.event.MessageEvent;
+import me.siasur.areacommunity.aogbot.event.AoGClientJoinEvent;
+import me.siasur.areacommunity.aogbot.event.AoGClientLeaveEvent;
+import me.siasur.areacommunity.aogbot.event.AoGClientMoveEvent;
+import me.siasur.areacommunity.aogbot.event.AoGMessageEvent;
 import me.siasur.areacommunity.aogbot.event.EventBuilder;
 import me.siasur.areacommunity.aogbot.event.EventManager;
-import me.siasur.areacommunity.aogbot.event.IEventManager;
 import me.siasur.areacommunity.aogbot.module.GreeterModule;
 import me.siasur.areacommunity.aogbot.module.IModuleManager;
+import me.siasur.areacommunity.aogbot.module.ModuleBridge;
 import me.siasur.areacommunity.aogbot.module.ModuleManager;
-import me.siasur.areacommunity.aogbot.module.TestModule;
 import me.siasur.areacommunity.aogbot.utility.ServiceLocator;
 /**
  * The Heart of this application
@@ -45,9 +48,12 @@ public class AoGBot {
 	ChannelManager _channelManager;
 	ClientManager _clientManager;
 	AoGBotConfig _config;
+	Logger _logger;
 
 	EventManager _eventManager;
 	ModuleManager _moduleManager;
+	
+	ModuleBridge _moduleBridge;
 
 	/**
 	 * Initializes a new instance of the {@link AoGBot}.
@@ -59,8 +65,8 @@ public class AoGBot {
 		_moduleManager = new ModuleManager();
 		ServiceLocator.getServiceLocator().addService(IModuleManager.class, _moduleManager);
 
-		_eventManager = new EventManager();
-		ServiceLocator.getServiceLocator().addService(IEventManager.class, _eventManager);
+		_eventManager = new EventManager(_moduleManager);
+		_logger = Logger.getLogger("AoGBot");
 	}
 
 	/**
@@ -114,6 +120,8 @@ public class AoGBot {
 
 		Thread consoleThread = new Thread(new BotConsole(query));
 		consoleThread.start();
+		
+		_eventManager.beginHandle();
 	}
 
 	/**
@@ -159,6 +167,8 @@ public class AoGBot {
 		
 		_moduleManager.addModule(greeter);
 		_moduleManager.enableAllModules();
+		
+		
 	}
 
 	private void registerListener(TS3Api api) {
@@ -205,8 +215,11 @@ public class AoGBot {
 				AoGClient client = _clientManager.manageClient(clientId);
 				_channelManager.locateClient(client);				
 				
-				me.siasur.areacommunity.aogbot.event.ClientJoinEvent join = EventBuilder.createClientJoinEvent(invoker, client);
-				_eventManager.fireEvent(me.siasur.areacommunity.aogbot.event.ClientJoinEvent.class, join);
+				String logMsg = "ClientJoinEvent: Client %s \"%s\" (%s) joined from [%s].";
+				_logger.info(String.format(logMsg, client.getId(), client.getNickname(), client.getUniqueId(), client.getIp()));
+				
+				AoGClientJoinEvent join = EventBuilder.createClientJoinEvent(invoker, client);				
+				_eventManager.queueEvent(join);
 			}
 
 			@Override
@@ -216,9 +229,12 @@ public class AoGBot {
 				
 				AoGClient invoker = (AoGClient) _clientManager.getClientById(invokerId);
 				AoGClient client = _clientManager.unmanageClient(clientId);
+
+				String logMsg = "ClientLeaveEvent: Client %s \"%s\" (%s) left.";
+				_logger.info(String.format(logMsg, client.getId(), client.getNickname(), client.getUniqueId()));
 				
-				me.siasur.areacommunity.aogbot.event.ClientLeaveEvent leave = EventBuilder.createClientLeaveEvent(invoker, client);
-				_eventManager.fireEvent(me.siasur.areacommunity.aogbot.event.ClientLeaveEvent.class, leave);
+				AoGClientLeaveEvent leave = EventBuilder.createClientLeaveEvent(invoker, client);
+				_eventManager.queueEvent(leave);
 			}
 
 			@Override
@@ -241,8 +257,11 @@ public class AoGBot {
 				AoGChannel sourceChannel = (AoGChannel) client.getChannel();
 				AoGChannel targetChannel = (AoGChannel) _channelManager.getChannel(channelId);
 
-				ClientMoveEvent clientMoved = EventBuilder.createClientMovedEvent(invoker, client, sourceChannel, targetChannel);
-				_eventManager.fireEvent(ClientMoveEvent.class, clientMoved);
+				String logMsg = "ClientMovedEvent: Client %s \"%s\" (%s) moved from \"%s\" to \"%s\".";
+				_logger.info(String.format(logMsg, client.getId(), client.getNickname(), client.getUniqueId(), sourceChannel.GetName(), targetChannel.GetName()));
+				
+				AoGClientMoveEvent clientMoved = EventBuilder.createClientMovedEvent(invoker, client, sourceChannel, targetChannel);
+				_eventManager.queueEvent(clientMoved);
 
 				sourceChannel.clientLeave(client);
 				targetChannel.clientJoin(client);
@@ -258,9 +277,12 @@ public class AoGBot {
 				int invokerId = textMessageEvent.getInvokerId();
 				
 				IAoGClient invoker = _clientManager.getClientById(invokerId);
+				
+				String logMsg = "TextMessageEvent: [Client %s \"%s\" (%s)] %s";
+				_logger.info(String.format(logMsg, invoker.getId(), invoker.getNickname(), invoker.getUniqueId(), message));
 					
-				MessageEvent msgEvent = EventBuilder.createMessageEvent(invoker, message);
-				_eventManager.fireEvent(MessageEvent.class, msgEvent);
+				AoGMessageEvent msgEvent = EventBuilder.createMessageEvent(invoker, message);
+				_eventManager.queueEvent(msgEvent);
 			}
 		});
 	}
